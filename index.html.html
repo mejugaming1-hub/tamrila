@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TAMRILA Kasir</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1c2a28;--bg:#eef1ee;--card:#fff;--line:#d9dfdb;--mute:#6b7a77;--acc:#e2a21f;--acc2:#1f4a43;--ok:#237a4b;--bad:#b3392f}
+@media(prefers-color-scheme:dark){:root{--ink:#e9efec;--bg:#121917;--card:#1b2523;--line:#2e3b38;--mute:#93a39f;--acc2:#5fb3a3}}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;background:var(--acc2);color:#fff;font-weight:600}
+button.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.bad{background:var(--bad)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+header{position:relative;color:#fff;background:var(--acc2) center/cover;padding:18px 20px 0}
+header::before{content:"";position:absolute;inset:0;background:linear-gradient(#0008,#000b)}
+header>*{position:relative}
+.brand{display:flex;align-items:center;gap:14px}
+.brand img,.logo0{width:56px;height:56px;border-radius:14px;object-fit:cover;background:var(--acc);display:grid;place-items:center;font-weight:800;color:#1c2a28;font-size:26px}
+.brand h1{font-size:30px;font-weight:800;letter-spacing:.14em}
+.brand small{opacity:.8}
+nav{display:flex;gap:4px;margin-top:14px;overflow-x:auto}
+nav button{background:transparent;border-radius:10px 10px 0 0;opacity:.75}
+nav button.on{background:var(--bg);color:var(--ink);opacity:1}
+main{padding:18px 20px;max-width:1300px;margin:auto}
+.view{display:none}.view.on{display:block}
+.pos{display:grid;grid-template-columns:1fr 360px;gap:18px}
+@media(max-width:900px){.pos{grid-template-columns:1fr}}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.bar input{flex:1;min-width:150px}
+.chip{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:7px 14px}
+.chip.on{background:var(--acc);color:#1c2a28;border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-align:left;padding:0;color:var(--ink);display:flex;flex-direction:column}
+.item:hover{border-color:var(--acc)}
+.ph{aspect-ratio:1/1;width:100%;object-fit:cover;display:grid;place-items:center;font-size:44px;font-weight:800;background:var(--line);color:var(--mute)}
+.item b{padding:8px 10px 0;font-weight:600}
+.item span{padding:0 10px 10px;color:var(--acc2);font-weight:800}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.cart{position:sticky;top:10px;align-self:start}
+.row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.row .n{flex:1;min-width:0}.row small{color:var(--mute);display:block}
+.q{display:flex;align-items:center;gap:6px}
+.q button{padding:2px 10px;background:var(--line);color:var(--ink)}
+.tot{display:flex;justify-content:space-between;padding:4px 0}
+.big{font-size:26px;font-weight:800}
+.empty{color:var(--mute);padding:18px 0;text-align:center}
+.modal{position:fixed;inset:0;background:#000a;display:none;place-items:center;padding:14px;z-index:9}
+.modal.on{display:grid}
+.box{background:var(--card);border-radius:18px;padding:20px;width:100%;max-width:440px;max-height:92vh;overflow:auto}
+.tabs{display:flex;gap:6px;margin:12px 0}
+.tabs button{flex:1}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.qr{width:100%;max-width:260px;margin:10px auto;display:block;border-radius:12px;border:1px solid var(--line)}
+.note{background:var(--bg);border-radius:10px;padding:12px;white-space:pre-wrap;margin-top:8px}
+table{width:100%;border-collapse:collapse}
+td,th{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stats b{font-size:20px;display:block}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;background:var(--line);display:grid;place-items:center;font-weight:800}
+.imgrow{display:flex;gap:10px;align-items:center;margin-top:6px}
+#struk{font-family:ui-monospace,monospace;font-size:13px}
+#struk h3{text-align:center}
+@media print{body>*:not(#strukModal){display:none!important}#strukModal{position:static;background:none;display:block}.box{max-width:none;padding:0}.noprint{display:none}}
+</style>
+</head>
+<body>
+<header id="hd">
+  <div class="brand"><div id="logo"></div><div><h1 id="shop">TAMRILA</h1><small>WARKOP · Kasir</small></div></div>
+  <nav id="nav">
+    <button data-v="pos" class="on">Kasir</button><button data-v="menu">Menu</button><button data-v="hist">Riwayat</button><button data-v="set">Pengaturan</button>
+  </nav>
+</header>
+<main>
+  <section id="pos" class="view on">
+    <div class="pos">
+      <div>
+        <div class="bar"><input id="q" placeholder="Cari menu…" aria-label="Cari menu"></div>
+        <div class="bar" id="cats"></div>
+        <div class="grid" id="grid"></div>
+      </div>
+      <div class="panel cart">
+        <h2>Pesanan</h2>
+        <div id="cart"></div>
+        <div class="tot"><span>Subtotal</span><span id="sub"></span></div>
+        <div class="tot"><span>Pajak <span id="taxp"></span></span><span id="tax"></span></div>
+        <div class="tot big"><span>Total</span><span id="total"></span></div>
+        <div class="bar" style="margin:10px 0 0"><button class="alt" id="clr">Kosongkan</button><button id="pay" style="flex:1">Bayar</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="menu" class="view">
+    <div class="panel">
+      <h2 id="mt">Tambah menu baru</h2>
+      <div class="form2">
+        <div><label>Nama menu</label><input id="mn"></div>
+        <div><label>Harga (Rp)</label><input id="mp" type="number" min="0"></div>
+        <div><label>Kategori</label><input id="mc" list="cl" placeholder="Kopi, Non-Kopi, Makanan…"><datalist id="cl"></datalist></div>
+        <div><label>Gambar</label><div class="imgrow"><div class="thumb" id="mth">?</div><button class="alt" id="mimg">Pilih gambar</button><button class="alt" id="mrm">Hapus</button></div></div>
+      </div>
+      <div class="bar" style="margin-top:14px"><button id="msave">Simpan menu</button><button class="alt" id="mcancel">Batal</button></div>
+    </div>
+    <div class="panel" style="margin-top:14px"><h2>Daftar menu</h2><table id="mlist"></table></div>
+  </section>
+
+  <section id="hist" class="view">
+    <div class="stats" id="stats"></div>
+    <div class="panel"><h2>Transaksi</h2><div style="overflow-x:auto"><table id="hlist"></table></div>
+    <div class="bar" style="margin-top:12px"><button class="alt bad" id="hclr">Hapus semua riwayat</button></div></div>
+  </section>
+
+  <section id="set" class="view">
+    <div class="panel">
+      <h2>Pengaturan toko</h2>
+      <div class="form2">
+        <div><label>Nama warung</label><input id="sn"></div>
+        <div><label>Pajak (%)</label><input id="st" type="number" min="0" step="0.5"></div>
+      </div>
+      <label>Alamat / keterangan struk</label><input id="sa">
+      <label>Logo</label><div class="imgrow"><div class="thumb" id="slogo"></div><button class="alt" data-img="logo">Ganti logo</button><button class="alt" data-rm="logo">Hapus</button></div>
+      <label>Gambar latar header</label><div class="imgrow"><div class="thumb" id="sbanner"></div><button class="alt" data-img="banner">Ganti gambar</button><button class="alt" data-rm="banner">Hapus</button></div>
+      <label>Gambar QRIS</label><div class="imgrow"><div class="thumb" id="sqris"></div><button class="alt" data-img="qris">Unggah QRIS</button><button class="alt" data-rm="qris">Hapus</button></div>
+      <label>Info rekening transfer</label><textarea id="sb" rows="3"></textarea>
+      <div class="bar" style="margin-top:14px"><button id="ssave">Simpan pengaturan</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="payModal"><div class="box">
+  <h2>Pembayaran</h2><div class="big" id="pTotal"></div>
+  <div class="tabs" id="ptabs"><button data-m="Tunai">Tunai</button><button data-m="Transfer" class="alt">Transfer</button><button data-m="QRIS" class="alt">QRIS</button></div>
+  <div id="pBody"></div>
+  <div class="bar" style="margin-top:14px"><button class="alt" id="pCancel">Batal</button><button id="pOk" style="flex:1">Selesaikan pembayaran</button></div>
+</div></div>
+
+<div class="modal" id="strukModal"><div class="box">
+  <div id="struk"></div>
+  <div class="bar noprint" style="margin-top:14px"><button class="alt" id="sPrint">Cetak</button><button id="sClose" style="flex:1">Transaksi baru</button></div>
+</div></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const rp=n=>'Rp '+Math.round(n).toLocaleString('id-ID');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const KEY='tamrila-pos-v1';
+const def={menu:[
+ {id:1,n:'Kopi Susu Tamrila',p:18000,c:'Kopi'},{id:2,n:'Americano',p:15000,c:'Kopi'},
+ {id:3,n:'Cappuccino',p:20000,c:'Kopi'},{id:4,n:'Es Teh Manis',p:8000,c:'Non-Kopi'},
+ {id:5,n:'Coklat Panas',p:16000,c:'Non-Kopi'},{id:6,n:'Roti Bakar Coklat',p:14000,c:'Makanan'},
+ {id:7,n:'Pisang Goreng',p:12000,c:'Makanan'}],
+ trx:[],set:{name:'TAMRILA',tax:0,addr:'Jl. Contoh No. 1',bank:'Bank BCA\n1234567890\na.n. TAMRILA',logo:'',banner:'',qris:''},seq:1};
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+S=S||def;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){alert('Penyimpanan penuh. Gunakan gambar yang lebih kecil atau hapus gambar lama.')}}
+
+// gambar, atau pilih file, kecilkan, simpan sebagai data URL
+function pickImg(max,cb){const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{
+  const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;
+  c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.8))};im.src=r.result};r.readAsDataURL(f)};i.click()}
+const ph=(img,t,cls)=>img?`<img class="${cls}" src="${img}" alt="${esc(t)}">`:`<div class="${cls}">${esc((t||'?')[0].toUpperCase())}</div>`;
+
+let cart={},cat='Semua',editId=null,mImg='',payM='Tunai',paid=0,last=null;
+
+// navigasi
+$('#nav').onclick=e=>{const v=e.target.dataset.v;if(!v)return;$$('#nav button').forEach(b=>b.classList.toggle('on',b===e.target));
+ $$('.view').forEach(s=>s.classList.toggle('on',s.id===v));render()};
+
+function header(){$('#shop').textContent=S.set.name;document.title=S.set.name+' Kasir';
+ $('#logo').innerHTML=ph(S.set.logo,S.set.name,'logo0');
+ if(S.set.logo)$('#logo').innerHTML=`<img src="${S.set.logo}" alt="Logo" style="width:56px;height:56px;border-radius:14px;object-fit:cover">`;
+ $('#hd').style.backgroundImage=S.set.banner?`url(${S.set.banner})`:''}
+
+// bagian kasir
+const cats=()=>['Semua',...new Set(S.menu.map(m=>m.c||'Lainnya'))];
+function renderPos(){
+ $('#cats').innerHTML=cats().map(c=>`<button class="chip ${c===cat?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+ const q=$('#q').value.toLowerCase();
+ const list=S.menu.filter(m=>(cat==='Semua'||(m.c||'Lainnya')===cat)&&m.n.toLowerCase().includes(q));
+ $('#grid').innerHTML=list.map(m=>`<button class="item" data-id="${m.id}">${ph(m.img,m.n,'ph')}<b>${esc(m.n)}</b><span>${rp(m.p)}</span></button>`).join('')||'<p class="empty">Menu tidak ditemukan.</p>';
+ renderCart()}
+$('#cats').onclick=e=>{if(e.target.dataset.c){cat=e.target.dataset.c;renderPos()}};
+$('#q').oninput=renderPos;
+$('#grid').onclick=e=>{const b=e.target.closest('.item');if(!b)return;cart[b.dataset.id]=(cart[b.dataset.id]||0)+1;renderCart()};
+function calc(){const sub=Object.entries(cart).reduce((a,[id,q])=>{const m=S.menu.find(x=>x.id==id);return a+(m?m.p*q:0)},0);
+ const tax=sub*(S.set.tax||0)/100;return{sub,tax,total:Math.round(sub+tax)}}
+function renderCart(){
+ const rows=Object.entries(cart).map(([id,q])=>{const m=S.menu.find(x=>x.id==id);return m?`<div class="row"><div class="n">${esc(m.n)}<small>${rp(m.p)}</small></div><div class="q"><button data-d="-1" data-id="${id}">−</button><b>${q}</b><button data-d="1" data-id="${id}">+</button></div><b>${rp(m.p*q)}</b></div>`:''}).join('');
+ $('#cart').innerHTML=rows||'<p class="empty">Pilih menu di sebelah kiri untuk mulai.</p>';
+ const c=calc();$('#sub').textContent=rp(c.sub);$('#tax').textContent=rp(c.tax);$('#total').textContent=rp(c.total);
+ $('#taxp').textContent=S.set.tax?`(${S.set.tax}%)`:'';$('#pay').disabled=!c.total}
+$('#cart').onclick=e=>{const id=e.target.dataset.id;if(!id)return;cart[id]+=+e.target.dataset.d;if(cart[id]<=0)delete cart[id];renderCart()};
+$('#clr').onclick=()=>{cart={};renderCart()};
+
+// bagian pembayaran
+$('#pay').onclick=()=>{payM='Tunai';paid=0;$('#payModal').classList.add('on');renderPay()};
+$('#pCancel').onclick=()=>$('#payModal').classList.remove('on');
+$('#ptabs').onclick=e=>{if(e.target.dataset.m){payM=e.target.dataset.m;paid=0;renderPay()}};
+function renderPay(){
+ const t=calc().total;$('#pTotal').textContent=rp(t);
+ $$('#ptabs button').forEach(b=>b.classList.toggle('alt',b.dataset.m!==payM));
+ let h='';
+ if(payM==='Tunai'){
+  h=`<label>Uang diterima</label><input id="cash" type="number" min="0" value="${paid||''}" placeholder="0">
+  <div class="quick"><button class="alt" data-q="${t}">Uang pas</button>${[20000,50000,100000].map(v=>`<button class="alt" data-q="${v}">${v/1000}rb</button>`).join('')}</div>
+  <div class="tot big" style="margin-top:10px"><span>Kembalian</span><span id="chg"></span></div>`;
+ }else if(payM==='Transfer'){
+  h=`<div class="note">${esc(S.set.bank)||'Isi info rekening di Pengaturan.'}</div><p class="empty" style="padding:8px 0">Transfer sesuai total, lalu cek bukti transfer pelanggan.</p>`;
+ }else{
+  h=S.set.qris?`<img class="qr" src="${S.set.qris}" alt="QRIS">`:'<p class="empty">Belum ada gambar QRIS. Unggah di menu Pengaturan.</p>';
+  h+='<p class="empty" style="padding:0">Pelanggan scan, lalu cek notifikasi pembayaran masuk.</p>'}
+ $('#pBody').innerHTML=h;
+ if(payM==='Tunai'){const f=()=>{paid=+$('#cash').value||0;$('#chg').textContent=paid>=t?rp(paid-t):'—';$('#pOk').disabled=paid<t};
+  $('#cash').oninput=f;$('#pBody').onclick=e=>{if(e.target.dataset.q){$('#cash').value=e.target.dataset.q;f()}};f()}
+ else{$('#pBody').onclick=null;$('#pOk').disabled=payM==='QRIS'&&!S.set.qris;paid=t}}
+$('#pOk').onclick=()=>{
+ const c=calc();const items=Object.entries(cart).map(([id,q])=>{const m=S.menu.find(x=>x.id==id);return{n:m.n,p:m.p,q}});
+ last={id:'TRX-'+String(S.seq++).padStart(4,'0'),t:Date.now(),items,...c,method:payM,paid:payM==='Tunai'?paid:c.total,change:payM==='Tunai'?paid-c.total:0};
+ S.trx.unshift(last);save();cart={};$('#payModal').classList.remove('on');showStruk(last);renderPos()};
+function showStruk(t){
+ $('#struk').innerHTML=`<h3>${esc(S.set.name)}</h3><p style="text-align:center">${esc(S.set.addr)}</p><hr>
+ <p>${t.id} · ${new Date(t.t).toLocaleString('id-ID')}</p><hr>
+ ${t.items.map(i=>`<div class="tot"><span>${i.q}× ${esc(i.n)}</span><span>${rp(i.p*i.q)}</span></div>`).join('')}<hr>
+ <div class="tot"><span>Subtotal</span><span>${rp(t.sub)}</span></div>
+ ${t.tax?`<div class="tot"><span>Pajak</span><span>${rp(t.tax)}</span></div>`:''}
+ <div class="tot"><b>Total</b><b>${rp(t.total)}</b></div>
+ <div class="tot"><span>Bayar (${t.method})</span><span>${rp(t.paid)}</span></div>
+ ${t.method==='Tunai'?`<div class="tot"><span>Kembali</span><span>${rp(t.change)}</span></div>`:''}<hr><p style="text-align:center">Terima kasih, sampai jumpa lagi!</p>`;
+ $('#strukModal').classList.add('on')}
+$('#sClose').onclick=()=>$('#strukModal').classList.remove('on');
+$('#sPrint').onclick=()=>window.print();
+
+// buat kelola menu
+function renderMenu(){
+ $('#cl').innerHTML=cats().slice(1).map(c=>`<option value="${esc(c)}">`).join('');
+ $('#mlist').innerHTML=S.menu.map(m=>`<tr><td style="width:72px">${ph(m.img,m.n,'thumb')}</td><td>${esc(m.n)}<br><small style="color:var(--mute)">${esc(m.c||'')}</small></td><td>${rp(m.p)}</td><td style="text-align:right;white-space:nowrap"><button class="alt" data-e="${m.id}">Ubah</button> <button class="alt bad" data-x="${m.id}">Hapus</button></td></tr>`).join('')||'<tr><td class="empty">Belum ada menu.</td></tr>'}
+function mReset(){editId=null;mImg='';['#mn','#mp','#mc'].forEach(s=>$(s).value='');$('#mt').textContent='Tambah menu baru';mThumb()}
+function mThumb(){$('#mth').innerHTML=mImg?`<img src="${mImg}" class="thumb" alt="">`:(($('#mn').value||'?')[0].toUpperCase())}
+$('#mimg').onclick=()=>pickImg(400,d=>{mImg=d;mThumb()});
+$('#mrm').onclick=()=>{mImg='';mThumb()};
+$('#mcancel').onclick=mReset;
+$('#msave').onclick=()=>{const n=$('#mn').value.trim(),p=+$('#mp').value;if(!n||!(p>=0)||$('#mp').value===''){alert('Isi nama dan harga menu.');return}
+ const o={n,p,c:$('#mc').value.trim()||'Lainnya',img:mImg};
+ if(editId){Object.assign(S.menu.find(m=>m.id===editId),o)}else{o.id=Date.now();S.menu.push(o)}
+ save();mReset();renderMenu()};
+$('#mlist').onclick=e=>{const b=e.target;
+ if(b.dataset.e){const m=S.menu.find(x=>x.id==b.dataset.e);editId=m.id;mImg=m.img||'';$('#mn').value=m.n;$('#mp').value=m.p;$('#mc').value=m.c||'';$('#mt').textContent='Ubah menu';mThumb();scrollTo({top:0,behavior:'smooth'})}
+ if(b.dataset.x&&confirm('Hapus menu ini?')){S.menu=S.menu.filter(m=>m.id!=b.dataset.x);delete cart[b.dataset.x];save();renderMenu()}};
+
+// untuk riwayat transaksi
+function renderHist(){
+ const d=new Date().toDateString(),td=S.trx.filter(t=>new Date(t.t).toDateString()===d);
+ const by=m=>td.filter(t=>t.method===m).reduce((a,t)=>a+t.total,0);
+ $('#stats').innerHTML=`<div>Omzet hari ini<b>${rp(td.reduce((a,t)=>a+t.total,0))}</b></div><div>Transaksi<b>${td.length}</b></div><div>Tunai<b>${rp(by('Tunai'))}</b></div><div>Transfer<b>${rp(by('Transfer'))}</b></div><div>QRIS<b>${rp(by('QRIS'))}</b></div>`;
+ $('#hlist').innerHTML='<tr><th>No.</th><th>Waktu</th><th>Item</th><th>Metode</th><th>Total</th><th></th></tr>'+
+  S.trx.map((t,i)=>`<tr><td>${t.id}</td><td>${new Date(t.t).toLocaleString('id-ID')}</td><td>${t.items.map(x=>x.q+'× '+esc(x.n)).join(', ')}</td><td>${t.method}</td><td>${rp(t.total)}</td><td><button class="alt" data-s="${i}">Struk</button></td></tr>`).join('')}
+$('#hlist').onclick=e=>{if(e.target.dataset.s)showStruk(S.trx[e.target.dataset.s])};
+$('#hclr').onclick=()=>{if(confirm('Hapus semua riwayat transaksi?')){S.trx=[];save();renderHist()}};
+
+// pengaturan
+function renderSet(){
+ $('#sn').value=S.set.name;$('#st').value=S.set.tax;$('#sa').value=S.set.addr;$('#sb').value=S.set.bank;
+ [['logo','slogo'],['banner','sbanner'],['qris','sqris']].forEach(([k,id])=>$('#'+id).innerHTML=S.set[k]?`<img class="thumb" src="${S.set[k]}" alt="">`:'–')}
+$('#set').onclick=e=>{const k=e.target.dataset.img,r=e.target.dataset.rm;
+ if(k)pickImg(k==='qris'?800:k==='banner'?1400:300,d=>{S.set[k]=d;save();renderSet();header()});
+ if(r){S.set[r]='';save();renderSet();header()}};
+$('#ssave').onclick=()=>{S.set.name=$('#sn').value.trim()||'TAMRILA';S.set.tax=+$('#st').value||0;S.set.addr=$('#sa').value;S.set.bank=$('#sb').value;save();header();alert('Pengaturan tersimpan.')};
+
+function render(){header();renderPos();renderMenu();renderHist();renderSet();mThumb()}
+render();
+</script>
+</body>
+</html>
